@@ -1,0 +1,10 @@
+Django
+psycopg2-binary
+pillow
+ipython
+django-stubs
+pytils
+asgiref
+sqlparse
+dotenv
+django-redis

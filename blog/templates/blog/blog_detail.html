@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+            <div class="col">
+                <div class="card shadow-sm">
+                    {% if product.image %}
+                    <img src="{{ object.image | media_filter }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">Название: {{ object.title }}</p>
+                        <p class="card-text">Дата создания: {{ object.created_at }}</p>
+                        <p class="card-text">{{ object.content }}</p>
+                        <a class="btn btn-primary" href="{% url 'blog:blog_list' %}" role="button">Назад</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    Просмотры: {{ object.views_count }}
+                </div>
+            </div>
+    </div>
+</div>
+{% include 'blog/includes/lower_menu.html' %}}
+{% endblock %}

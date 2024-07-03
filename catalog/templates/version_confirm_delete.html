@@ -1,0 +1,11 @@
+{% extends "catalog/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Удалить версию</h2>
+    <p>Вы уверены, что хотите удалить версию "{{ object.version_name }}"?</p>
+    <form method="post">{% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="{% url 'catalog:specific_product' object.product.pk %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}
