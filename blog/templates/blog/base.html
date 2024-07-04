@@ -188,7 +188,7 @@
 
 
 <header data-bs-theme="dark">
-    {% include 'blog/includes/upper_menu.html' %}
+    {% include 'blog/includes/inc_menu.html' %}
 </header>
 
 <main>
@@ -208,8 +208,10 @@
     {% block content %}
     {% endblock %}
 
-</main>
 
+
+</main>
+{% include 'blog/includes/lower_menu.html' %}
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 </body>
