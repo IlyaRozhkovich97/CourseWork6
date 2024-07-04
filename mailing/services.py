@@ -1,4 +1,5 @@
 import smtplib
+import logging
 from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -8,29 +9,50 @@ from mailing.models import Mailing, Log, Message
 from django.core.cache import cache
 from config.settings import CACHE_ENABLED
 
+logger = logging.getLogger(__name__)
+
 
 def send_mailing():
     """
     Функция отправки рассылок
     """
-    print("send_mailing function called")  # Debug message
+    logger.debug("send_mailing function called")
     zone = pytz.timezone(settings.TIME_ZONE)
     current_datetime = datetime.now(zone)
     mailings = Mailing.objects.filter(status__in=[Mailing.STARTED, Mailing.CREATED])
 
+    if not mailings:
+        logger.debug("No mailings to process")
+
     for mailing in mailings:
-        print(f"Processing mailing: {mailing.id}")  # Debug message
+        logger.debug(f"Processing mailing: {mailing.id}")
+        logger.debug(f"Current datetime: {current_datetime}, mailing end_date: {mailing.end_date}")
+
         # Если достигли end_date, завершить рассылку
         if mailing.end_date and current_datetime >= mailing.end_date:
             mailing.status = Mailing.COMPLETED
             mailing.save()
+            logger.debug(f"Mailing {mailing.id} completed due to end_date.")
             continue  # Пропустить отправку, если end_date достигнут
 
         # Проверить, нужно ли отправить сообщение в текущий момент времени
+        logger.debug(f"Mailing next_send_time: {mailing.next_send_time}")
         if mailing.next_send_time and current_datetime >= mailing.next_send_time:
             mailing.status = Mailing.STARTED
             clients = mailing.clients.all()
+            logger.debug(f"Clients to send: {[client.email for client in clients]}")
+
+            if not clients:
+                logger.debug(f"No clients for mailing {mailing.id}")
+                continue
+
             try:
+                logger.debug("Sending mail with following details:")
+                logger.debug(f"Subject: {mailing.message.title}")
+                logger.debug(f"Message: {mailing.message.message}")
+                logger.debug(f"From: {settings.EMAIL_HOST_USER}")
+                logger.debug(f"To: {[client.email for client in clients]}")
+
                 server_response = send_mail(
                     subject=mailing.message.title,
                     message=mailing.message.message,
@@ -38,15 +60,15 @@ def send_mailing():
                     recipient_list=[client.email for client in clients],
                     fail_silently=False,
                 )
-                print(f"Mail sent successfully: {server_response}")  # Debug message
+                logger.debug(f"Mail sent successfully: {server_response}")
                 Log.objects.create(status=Log.SUCCESS,
                                    server_response=server_response,
-                                   mailing=mailing, )
+                                   mailing=mailing)
             except smtplib.SMTPException as e:
-                print(f"Mail sending failed: {str(e)}")  # Debug message
+                logger.error(f"Mail sending failed: {str(e)}")
                 Log.objects.create(status=Log.FAIL,
                                    server_response=str(e),
-                                   mailing=mailing, )
+                                   mailing=mailing)
 
             # Обновление времени следующей отправки
             if mailing.periodicity == Mailing.DAILY:
@@ -57,19 +79,20 @@ def send_mailing():
                 mailing.next_send_time += timedelta(days=30)
 
             mailing.save()
+            logger.debug(f"Mailing {mailing.id} next_send_time updated to {mailing.next_send_time}")
 
 
 def start_scheduler():
-    print("Starting scheduler...")  # Debug message
+    logger.debug("Starting scheduler...")
     scheduler = BackgroundScheduler()
     # Проверка, добавлена ли задача уже
     if not scheduler.get_jobs():
-        print("Adding job to scheduler...")  # Debug message
+        logger.debug("Adding job to scheduler...")
         scheduler.add_job(send_mailing, 'interval', seconds=30)
 
     if not scheduler.running:
         scheduler.start()
-        print("Scheduler started")  # Debug message
+        logger.debug("Scheduler started")
 
 
 def get_messages_from_cache():
@@ -87,24 +110,3 @@ def get_messages_from_cache():
             messages = Message.objects.all()
             cache.set(key, messages)
             return messages
-
-
-# Test function to check email sending manually
-def test_send_mail():
-    try:
-        server_response = send_mail(
-            subject="Test Email",
-            message="This is a test email.",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["your_test_email@example.com"],  # Replace with your test email
-            fail_silently=False,
-        )
-        print(f"Test mail sent successfully: {server_response}")
-    except smtplib.SMTPException as e:
-        print(f"Test mail sending failed: {str(e)}")
-
-
-# Ensure the scheduler starts when the server starts
-if __name__ == "__main__":
-    start_scheduler()
-    test_send_mail()

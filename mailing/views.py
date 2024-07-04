@@ -7,7 +7,6 @@ from blog.services import get_articles_from_cache
 from mailing.forms import ClientForm, MessageForm, MailingForm, ManagerMailingForm
 from mailing.models import Message, Log
 
-
 from django.views.generic import TemplateView
 
 from mailing.models import Mailing, Client
