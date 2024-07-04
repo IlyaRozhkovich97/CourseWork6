@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'catalog',
+
     'blog',
     'users',
     'mailing'
@@ -156,6 +156,5 @@ if CACHE_ENABLED:
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": os.getenv('LOCATION'),
-            "TIMEOUT": 300
         }
     }

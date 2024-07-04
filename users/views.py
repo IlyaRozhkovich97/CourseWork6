@@ -1,6 +1,8 @@
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from django.contrib import messages
 from .forms import UserRegisterForm, UserProfileForm, CustomAuthenticationForm
 from .models import User
@@ -62,7 +64,7 @@ class ProfileView(UpdateView):
     form_class = UserProfileForm
     success_url = reverse_lazy('users:profile')
 
-    def get_object(self, queryset=None):
+    def get_object(self):
         return self.request.user
 
 
@@ -70,3 +72,19 @@ class ProfileView(UpdateView):
 class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
     template_name = 'users/login.html'
+
+
+class UserListView(PermissionRequiredMixin, ListView):
+    model = User
+    permission_required = 'users.view_all_users'
+
+
+@permission_required('users.deactivate_user')
+def toggle_activity(request, pk):
+    user = User.objects.get(pk=pk)
+    if user.is_active:
+        user.is_active = False
+    else:
+        user.is_active = True
+    user.save()
+    return redirect(reverse('users:users_list'))
