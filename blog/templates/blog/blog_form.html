@@ -1,24 +1,36 @@
-{% extends 'blog/base.html' %}
+<head>
+    <title>Редактирование блога</title>
+</head>
+{% include 'blog/includes/upper_menu.html' %}
+{% load static %}
 {% block content %}
+<section class="jumbotron text-center bg-white text-dark py-4">
+    <div class="container">
+        <h1 class="jumbotron-heading mb-4">Редактирование блога</h1>
+    </div>
+</section>
 <div class="container">
-    <div class="row">
-        <div class="col-6">
-            <form class="row" method="post" enctype="multipart/form-data">
-                <div class="col">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">
-                        {% if object %}
-                        Сохранить
-                        {% else %}
-                        Создать
-                        {% endif %}
-                    </button>
-                    <a href="{% url 'blog:blog_list' %}" class="btn btn-secondary">Отмена</a>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">
+                            {% if object %}
+                            Сохранить
+                            {% else %}
+                            Создать
+                            {% endif %}
+                        </button>
+                        <a href="{% url 'blog:blog_list' %}" class="btn btn-secondary">Отмена</a>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% include 'blog/includes/lower_menu.html' %}
 {% endblock %}
-

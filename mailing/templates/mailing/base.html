@@ -1,5 +1,5 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -13,32 +13,47 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{% static 'css/album.css' %}" rel="stylesheet">
+    <style>
+        /* Custom CSS for image cards */
+        .card-img {
+            width: 100%;
+            height: 300px; /* Adjust height as needed */
+            object-fit: cover; /* Maintain aspect ratio and fill container */
+        }
+    </style>
 </head>
 
 <body>
 
 <header>
-{% include 'mailing/includes/inc_menu.html' %}
+    {% include 'mailing/includes/upper_menu.html' %}
 </header>
 
 <main role="main">
 
     {% block content %}
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for item in items %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="{% static item.image.url %}" class="card-img" alt="Изображение">
+                        <div class="card-body">
+                            <p class="card-text">{{ item.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     {% endblock %}
 
 </main>
 
-<footer class="text-muted">
-    <div class="container">
-        <p class="float-right">
-            <a href="#">Back to top</a>
-        </p>
-        <p>&copy; 2024 - {% now 'Y' %}</p>
-    </div>
-</footer>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
+{% include 'mailing/includes/lower_menu.html' %}
 
 <!-- Bootstrap core JavaScript
 ================================================== -->

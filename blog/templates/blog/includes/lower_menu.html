@@ -1,9 +1,8 @@
-<!-- catalog/includes/lower_menu.html -->
 <footer class="pt-4 my-md-5 pt-md-5 border-top bg-white">
     <div class="container">
         <div class="row">
             <div class="col-12 col-md">
-                <small class="d-block mb-3 text-muted">&copy; {% now 'Y' %} - iStore - магазин техники Apple</small>
+                <small class="d-block mb- text-dark h6">&copy; {% now 'Y' %} - Наш блог</small>
             </div>
             <div class="col-6 col-md">
                 <h5>Навигация</h5>
@@ -29,16 +28,18 @@
                     {% endif %}
                 </ul>
             </div>
+            {% if user.is_authenticated %}
             <div class="col-6 col-md">
                 <h5>Рассылки</h5>
+                <ul class="list-unstyled text-small">
                         <li><a href="{% url 'mailing:mailings_list' %}" class="text-dark">Список рассылок</a></li>
                         <li><a href="{% url 'mailing:messages_list' %}" class="text-dark">Список сообщений</a></li>
                         <li><a href="{% url 'mailing:clients_list' %}" class="text-dark">Список клиентов</a></li>
                         <li><a href="{% url 'mailing:logs_list' %}" class="text-dark">Попытки рассылок</a></li>
                         {% if perms.users.view_all_users or user.is_superuser %}
-                        <li><a href="{% url 'users:users_list' %}" class="text-dark">Список пользователей</a></li>
+                            <li><a href="{% url 'users:users_list' %}" class="text-dark">Список пользователей</a></li>
                         {% endif %}
-                <ul class="list-unstyled text-small">
+                    {% endif %}
                 </ul>
             </div>
         </div>

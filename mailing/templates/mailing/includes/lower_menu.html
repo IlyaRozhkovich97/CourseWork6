@@ -1,39 +1,45 @@
-<!-- catalog/includes/lower_menu.html -->
 <footer class="pt-4 my-md-5 pt-md-5 border-top bg-white">
     <div class="container">
         <div class="row">
             <div class="col-12 col-md">
-                <small class="d-block mb-3 text-muted">&copy; {% now 'Y' %} - iStore - магазин техники Apple</small>
+                <small class="d-block mb- text-dark h6">&copy; {% now 'Y' %} - Сервис рассылок</small>
             </div>
             <div class="col-6 col-md">
                 <h5>Навигация</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a href="{% url 'mailing:index' %}" class="text-white">Главная</a></li>
-                        <li><a href="{% url 'blog:blog_list' %}" class="text-white">Блог</a></li>
+                    <li><a href="{% url 'mailing:index' %}" class="text-dark">Главная</a></li>
+                    <li><a href="{% url 'blog:blog_list' %}" class="text-dark">Блог</a></li>
                 </ul>
             </div>
             <div class="col-6 col-md">
-                <h5>Рассылки</h5>
+                <h5>Профиль</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="{% url 'blog:blog_list' %}">Блог</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'users:profile' %}" class="text-muted">Профиль</a></li>
+                        <li><a href="{% url 'users:profile' %}" class="text-dark">Профиль</a></li>
                         <li>
                             <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-link text-muted" style="padding: 0; border: none; background: none;">Выйти</button>
+                                <button type="submit" class="text-dark" style="padding: 0; border: none; background: none;">Выйти</button>
                             </form>
                         </li>
                     {% else %}
-                        <li><a href="{% url 'users:login' %}" class="text-muted">Войти</a></li>
-                        <li><a href="{% url 'users:register' %}" class="text-muted">Регистрация</a></li>
+                        <li><a href="{% url 'users:login' %}" class="text-dark">Вход</a></li>
+                        <li><a href="{% url 'users:register' %}" class="text-dark">Регистрация</a></li>
                     {% endif %}
                 </ul>
             </div>
+            {% if user.is_authenticated %}
             <div class="col-6 col-md">
-                <h5>О нас</h5>
+                <h5>Рассылки</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="{% url 'catalog:contact' %}">Контакты</a></li>
+                        <li><a href="{% url 'mailing:mailings_list' %}" class="text-dark">Список рассылок</a></li>
+                        <li><a href="{% url 'mailing:messages_list' %}" class="text-dark">Список сообщений</a></li>
+                        <li><a href="{% url 'mailing:clients_list' %}" class="text-dark">Список клиентов</a></li>
+                        <li><a href="{% url 'mailing:logs_list' %}" class="text-dark">Попытки рассылок</a></li>
+                        {% if perms.users.view_all_users or user.is_superuser %}
+                            <li><a href="{% url 'users:users_list' %}" class="text-dark">Список пользователей</a></li>
+                        {% endif %}
+                    {% endif %}
                 </ul>
             </div>
         </div>
