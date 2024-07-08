@@ -1,6 +1,3 @@
-<head>
-    <title>Список рассылок</title>
-</head>
 {% extends 'mailing/base.html'%}
 {% load static %}
 {% block content %}
@@ -21,18 +18,16 @@
                     <p class="card-text">Название: {{ mailing.name }}</p>
                     <p class="card-text">Статус: {{ mailing.status }}</p>
                     <p class="card-text">Периодичность: {{ mailing.periodicity }}</p>
+                    {% if perms.mailing.view_all_mailings or user == mailing.owner or user.is_superuser %}
                     <div class="d-flex justify-content-center">
-                        <div class="btn-group">
-                            {% if perms.mailing.view_all_mailings or user == mailing.owner or user.is_superuser %}
-                            <a class="btn btn-primary" href="{% url 'mailing:view_mailing' mailing.pk %}" role="button">Просмотр</a>
-                            {% endif %}
-                            {% if perms.mailing.deactivate_mailing or user == mailing.owner or user.is_superuser %}
-                            <a class="btn btn-primary" href="{% url 'mailing:edit_mailing' mailing.pk %}" role="button">Редактировать</a>
-                            {% endif %}
-                            {% if user == mailing.owner or user.is_superuser %}
-                            <a class="btn btn-primary" href="{% url 'mailing:delete_mailing' mailing.pk %}" role="button">Удалить</a>
-                            {% endif %}
-                        </div>
+                        <a class="btn btn-primary mr-2" href="{% url 'mailing:view_mailing' mailing.pk %}" role="button">Просмотр</a>
+                        {% if perms.mailing.deactivate_mailing or user == mailing.owner or user.is_superuser %}
+                        <a class="btn btn-primary mr-2" href="{% url 'mailing:edit_mailing' mailing.pk %}" role="button">Редактировать</a>
+                        {% endif %}
+                        {% endif %}
+                        {% if user == mailing.owner or user.is_superuser %}
+                        <a class="btn btn-primary" href="{% url 'mailing:delete_mailing' mailing.pk %}" role="button">Удалить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

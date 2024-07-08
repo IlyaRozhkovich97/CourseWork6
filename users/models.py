@@ -18,8 +18,12 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        permissions = [
+            ('deactivate_user', 'Can deactivate user'),
+            ('view_all_users', 'Can view all users'),
+        ]
 
     def __str__(self):
         return self.email

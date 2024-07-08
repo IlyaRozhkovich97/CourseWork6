@@ -567,80 +567,24 @@
   }
 },
 {
-  "model": "mailing.client",
-  "pk": 2,
-  "fields": {
-    "name": "Мария",
-    "email": "solod-spb78@yandex.ru",
-    "comment": "",
-    "owner": 2
-  }
-},
-{
-  "model": "mailing.message",
-  "pk": 4,
-  "fields": {
-    "title": "Рассылка",
-    "message": "Привет!\r\nЭто рассылка!",
-    "owner": 2
-  }
-},
-{
-  "model": "mailing.mailing",
-  "pk": 11,
-  "fields": {
-    "name": "Рассылка",
-    "description": "Рассылка",
-    "status": "Завершена",
-    "periodicity": "Раз в день",
-    "start_date": "2024-07-04T17:13:00Z",
-    "end_date": "2024-07-07T17:13:00Z",
-    "next_send_time": "2024-07-07T17:22:00Z",
-    "message": 4,
-    "owner": 2,
-    "clients": [
-      2
-    ]
-  }
-},
-{
-  "model": "mailing.log",
-  "pk": 3,
-  "fields": {
-    "time": "2024-07-04T17:14:35.315Z",
-    "status": "Успешно",
-    "server_response": "1",
-    "mailing": 11
-  }
-},
-{
-  "model": "mailing.log",
-  "pk": 4,
-  "fields": {
-    "time": "2024-07-04T17:22:05.207Z",
-    "status": "Успешно",
-    "server_response": "1",
-    "mailing": 11
-  }
-},
-{
-  "model": "mailing.log",
-  "pk": 5,
-  "fields": {
-    "time": "2024-07-07T07:17:38.277Z",
-    "status": "Успешно",
-    "server_response": "1",
-    "mailing": 11
-  }
-},
-{
-  "model": "mailing.log",
+  "model": "auth.group",
   "pk": 6,
   "fields": {
-    "time": "2024-07-07T07:17:40.430Z",
-    "status": "Успешно",
-    "server_response": "1",
-    "mailing": 11
+    "name": "manager",
+    "permissions": [
+      48,
+      51,
+      61,
+      52,
+      53,
+      56,
+      57,
+      55,
+      41,
+      62,
+      63,
+      43
+    ]
   }
 }
 ]

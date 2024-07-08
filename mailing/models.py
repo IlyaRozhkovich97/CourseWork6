@@ -84,7 +84,7 @@ class Mailing(models.Model):
     next_send_time = models.DateTimeField(verbose_name='Время следующей отправки', **NULLABLE)
     clients = models.ManyToManyField(Client, related_name='mailing', verbose_name='Клиенты для рассылки')
     message = models.ForeignKey(Message, verbose_name='Cообщение', on_delete=models.CASCADE, **NULLABLE)
-    owner = models.ForeignKey(User, verbose_name='Владелец',  on_delete=models.SET_NULL, **NULLABLE)
+    owner = models.ForeignKey(User, verbose_name='Владелец', on_delete=models.SET_NULL, **NULLABLE)
 
     def __str__(self):
         return f"{self.name}, статус: {self.status}"
@@ -93,6 +93,10 @@ class Mailing(models.Model):
         if not self.next_send_time:
             self.next_send_time = self.start_date
         super().save(*args, **kwargs)
+
+    @classmethod
+    def get_active_mailings(cls):
+        return cls.objects.filter(status__in=[cls.CREATED, cls.STARTED])
 
     class Meta:
         verbose_name = "Рассылка"

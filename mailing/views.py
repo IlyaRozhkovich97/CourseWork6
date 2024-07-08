@@ -1,15 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
+from django.views.generic import TemplateView
 
 from blog.services import get_articles_from_cache
 from mailing.forms import ClientForm, MessageForm, MailingForm, ManagerMailingForm
-from mailing.models import Message, Log
-
-from django.views.generic import TemplateView
-
 from mailing.models import Mailing, Client
+from mailing.models import Message, Log
 
 
 class HomeView(TemplateView):
@@ -223,15 +222,35 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class MailingUpdateView(LoginRequiredMixin, UpdateView):
+class MailingUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Контроллер отвечающий за редактирование рассылки
     """
     model = Mailing
-    form_class = MailingForm
+    permission_required = 'mailing.change_mailing'  # разрешение на изменение рассылки
+    template_name = 'mailing/mailing_form.html'  # ваш шаблон редактирования рассылки
+    fields = ['name', 'description', 'status', 'periodicity', 'start_date', 'end_date', 'next_send_time', 'clients',
+              'message', 'owner']
 
-    def get_success_url(self):
-        return reverse('mailing:view_mailing', args=[self.kwargs.get('pk')])
+    def dispatch(self, request, *args, **kwargs):
+        # Получаем объект рассылки, который пытаемся редактировать
+        self.object = self.get_object()
+
+        # Проверяем разрешение пользователя на редактирование этой рассылки
+        if not self.has_permission():
+            # Если разрешения нет, вызываем исключение PermissionDenied
+            return self.handle_no_permission()
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        # Получаем объект рассылки, используя переданный в URL идентификатор
+        id = self.kwargs.get('pk')
+        return get_object_or_404(Mailing, pk=id)
+
+    def get_permission_denied_message(self):
+        # Сообщение об ошибке при отсутствии разрешения
+        return "У вас нет разрешения на редактирование этой рассылки."
 
     def get_form_class(self):
         """
