@@ -2,37 +2,41 @@
 {% load static %}
 {% load my_tags %}
 {% block content %}
-<section class="jumbotron text-center">
+<section class="bg-white text-center py-5">
     <div class="container">
+        {% if user.is_authenticated %}
         <h1 class="jumbotron-heading">Сервис управления рассылками</h1>
         <p class="lead text-muted">С помощью нашего сервиса вы можете создать email-рассылку для своих клиентов.</p>
         <p>
-            {% if user.is_authenticated %}
             <a href="{% url 'mailing:create' %}" class="btn btn-primary my-2">Добавить клиента</a>
             <a href="{% url 'mailing:create_message' %}" class="btn btn-primary my-2">Добавить сообщение</a>
             <a href="{% url 'mailing:create_mailing' %}" class="btn btn-primary my-2">Создать рассылку</a>
-            {% else %}
-            <a href="{% url 'users:login' %}" class="btn btn-primary my-2">Вход</a>
-            <a href="{% url 'users:register' %}" class="btn btn-primary my-2">Регистрация</a>
-            {% endif %}
         </p>
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                <div class="card-header"><h5>Статистика рассылок</h5></div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Всего рассылок - {{ all_mailings }}</li>
-                    <li class="list-group-item">Активных рассылок - {{ active_mailings }}</li>
-                    <li class="list-group-item">Уникальных клиентов для рассылок - {{ active_clients }}</li>
-                </ul>
+                    <div class="card-header"><h5>Статистика рассылок</h5></div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Всего рассылок - {{ all_mailings }}</li>
+                        <li class="list-group-item">Активных рассылок - {{ active_mailings }}</li>
+                        <li class="list-group-item">Уникальных клиентов для рассылок - {{ active_clients }}</li>
+                    </ul>
+                </div>
             </div>
         </div>
+        {% else %}
+        <h1 class="jumbotron-heading">Совершите вход или зарегистрируйтесь на сайте, чтобы иметь полный функционал</h1>
+        <p>
+            <a href="{% url 'users:login' %}" class="btn btn-primary my-2">Вход</a>
+            <a href="{% url 'users:register' %}" class="btn btn-primary my-2">Регистрация</a>
+        </p>
+        {% endif %}
     </div>
 </section>
-<section class="jumbotron text-center">
+<section class="text-center">
     <div class="container">
         <h1 class="jumbotron-heading">Наш блог</h1>
-        <div class="album py-5 bg-light">
+        <div class="album py-5">
             <div class="container">
                 <div class="row row-cols-1 row-cols-sm-3 row-cols-md-7 g-6">
                     {% for object in random_blogs %}
