@@ -13,7 +13,7 @@
                         <li>
                             <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-link text-white text-decoration-none" style="padding: 0; border: none; background: none;">Выйти</button>
+                                <button type="submit" class="btn btn-link text-muted" style="padding: 0; border: none; background: none;">Выйти</button>
                             </form>
                         </li>
                     {% else %}

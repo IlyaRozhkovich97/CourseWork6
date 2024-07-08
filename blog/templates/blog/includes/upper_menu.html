@@ -29,7 +29,12 @@
                         <li><a href="{% url 'users:users_list' %}" class="text-white">Список пользователей</a></li>
                         {% endif %}
                         <li><a href="{% url 'users:profile' %}" class="text-white">Профиль</a></li>
-                        <li><a href="{% url 'users:logout' %}" class="text-white">Выход</a></li>
+                        <li>
+                            <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="text-white" style="padding: 0; border: none; background: none;">Выйти</button>
+                            </form>
+                        </li>
                         {% else %}
                         <li><a href="{% url 'users:login' %}" class="text-white">Вход</a></li>
                         <li><a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
